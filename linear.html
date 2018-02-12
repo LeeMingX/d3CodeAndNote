@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>linear</title>
+</head>
+<body>
+  <script src="js/d3.v3.min.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    var svg = d3.select("body")
+                .append("svg")
+                .attr("width", "500px")
+                .attr("height", "500px")
+
+    var rs = [45, 35, 25, 15, 5]
+    var q = d3.scale.quantize()
+                      .domain([50, 0])
+                      .range(["#888", "#666", "#444", "#222", "#000"])
+
+    svg.selectAll("circle")
+       .data(rs)
+       .enter()
+       .append("circle")
+       .attr("cx", function(d, i){ return 50 + 30 * i; })
+       .attr("cy", "50")
+       .attr("r", function(d){ return d;})
+       .attr("fill", function(d){ return q(d); })
+
+    var quantize = d3.scale.quantize()
+                           .domain([0, 2, 4, 10])
+                           .range([0, 100])
+
+    var quantile = d3.scale.quantile()
+                           .domain([0, 2, 4, 10])
+                           .range([0, 100])
+  </script>
+</body>
+</html>
