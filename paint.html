@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>paint shape</title>
+  </head>
+  <body>
+    <script src="js/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      var width = "1000px";
+      var height = "1000px";
+      var svg = d3.select("body")
+                  .append("svg")
+                  .attr("width", width)
+                  .attr("height", height);
+      var points = [
+        [80, 80],
+        [200, 100],
+        [200, 200],
+        [100, 200],
+        [90, 90],
+        [125, 215],
+      ];
+
+      // var dataset = [80, 120, 130, 70, 60, 90];
+
+      // var area = d3.svg.area()
+      //                  .x(function(d, i){ return 50 + i * 50; })
+      //                  .y0(function(d){ return 400; })
+      //                  .y1(function(d) { return 400 - d; })
+      //
+      // svg.append("path")
+      //    .attr("d", area(dataset))
+      //    .attr("stroke", "black")
+      //    .attr("stroke-width", "3px")
+      //    .attr("fill", "blue")
+      //
+      var lineGen = d3.svg.line()
+                          .interpolate("cardinal")
+                          .tension("0.5")
+                          .x(function(d){ return d[1]; })
+                          .y(function(d){ return d[0]; });
+      // svg.append("path")
+      //    .attr("d", lineGen(points))
+      //    .attr("stroke", "black")
+      //    .attr("stroke-width", "3px")
+      //    .attr("fill", "none");
+
+      // var  dataset = [
+      //   { startAngle: 0, endAngle: Math.PI * 0.6},
+      //   { startAngle: Math.PI * 0.6, endAngle: Math.PI},
+      //   { startAngle: Math.PI, endAngle: Math.PI * 1.7},
+      //   { startAngle: Math.PI * 1.7, endAngle: Math.PI * 2},
+      // ];
+      // var arc = d3.svg.arc()
+      //                 .innerRadius(0)
+      //                 .outerRadius(100);
+      // var colors = d3.scale.category10();
+      // svg.selectAll("path")
+      //    .data(dataset)
+      //    .enter()
+      //    .append("path")
+      //    .attr("d", function(d){ return arc(d); })
+      //    .attr("transform", "translate(200, 200)")
+      //    .attr("startAngle", function(d){ return d.startAngle; })
+      //    .attr("endAngle", function(d){ return d.endAngle; })
+      //    .attr("stroke", "black")
+      //    .attr("stroke-width", 3)
+      //    .attr("fill", function(d, i){ return colors(i); })
+      // svg.selectAll("text")
+      //    .data(dataset)
+      //    .enter()
+      //    .append("text")
+      //    .attr("fill", "white")
+      //    .attr("transform", function(d){
+      //      return "translate(200, 200)" +
+      //       "translate (" + arc.centroid(d) + ")";
+      //    })
+      //    .attr("text-anchor", "middle")
+      //    .attr("font-size", "18px")
+      //    .text(function(d){ return Math.round((d.endAngle - d.startAngle)/Math.PI * 180) + "°"; });
+      // var symbol = d3.svg.symbol()
+      //                    .size(function(d){ return d.size; })
+      //                    .type(function(d){ return d.type; });
+      // var colors = d3.scale.category20();
+      // svg.selectAll("path")
+      //    .data(function(d, i){
+      //      var dataset = [];
+      //      for (var i = 0; i < 30; ++i) {
+      //        dataset.push({
+      //          size: Math.random() * 30 + 180,
+      //          type: d3.svg.symbolTypes[Math.floor(Math.random()*d3.svg.symbolTypes.length)]
+      //        })
+      //      }
+      //      return dataset
+      //    })
+      //    .enter()
+      //    .append("path")
+      //    .attr("d", function(d){ return symbol(d); })
+      //    .attr("transform", function(d, i){
+      //      var x = i % 5 * 30 + 100;
+      //      var y = Math.floor(i / 5) * 30 + 100;
+      //      return "translate(" + x + ", " + y + ")"
+      //    })
+      //    .attr("fill", function(d, i){ return colors(i); });
+      // var dataset = {
+      //   source: {
+      //     radius: 100,
+      //     startAngle: 0.2,
+      //     endAngle: Math.PI * 0.3
+      //   },
+      //   target: {
+      //     radius: 100,
+      //     startAngle: Math.PI,
+      //     endAngle: Math.PI * 1.6
+      //   }
+      // }
+      //
+      // var chord = d3.svg.chord();
+      // svg.append("path")
+      //    .attr("d", chord(dataset))
+      //    .attr("transform", "translate(200, 200)")
+      //    .attr("stroke", "black")
+      //    .attr("stroke-width", 3)
+      //    .attr("fill", "#5238ef")
+
+      var dataset = {
+        source: { x: 100, y: 100 },
+        target: { x: 300, y: 200 }
+      }
+      var diagonal = d3.svg.diagonal()
+                           .projection(function(d){
+                             var x = d.x * 2;
+                             var y = d.y * 2;
+                             return [x, y];
+                           });
+      svg.append("path")
+         .attr("d", diagonal(dataset))
+         .attr("stroke", "black")
+         .attr("stroke-width", 3)
+         .attr("fill", "none");
+    </script>
+  </body>
+</html>

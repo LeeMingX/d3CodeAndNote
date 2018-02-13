@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>line chart</title>
+    <style media="screen">
+      .axis path, .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="js/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+    var width = "1000px";
+    var height = "1000px";
+    var svg = d3.select("body")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+    var padding = { top: 20, right: 20, bottom: 20, left: 20};
+    var dataset = {
+      country: "china",
+      gdp: [
+        [2000, 11920],
+        [2001, 13170],
+        [2002, 14550],
+        [2003, 16500],
+        [2004, 19440],
+        [2005, 22870],
+        [2006, 27930],
+        [2007, 35040],
+        [2008, 45470],
+        [2009, 51050],
+        [2010, 59490],
+        [2011, 73140],
+        [2012, 83860],
+        [2013, 103550]
+      ]
+    }
+    var years = [];
+    var index = [];
+    for (var i = 0; i < dataset.gdp.length; ++i) {
+      years.push(dataset.gdp[i][0]);
+      index.push(i * 50);
+    }
+    index.push(index.length * 50)
+    var xScale = d3.scale.threshold()
+                    .domain(years)
+                    .range(index);
+    var yScale = d3.scale.linear()
+                         .domain([120000, 10000])
+                         .range([0, 500]);
+    var xAxis = d3.svg.axis()
+                      .scale(xScale)
+                      .orient("bottom")
+                      .ticks(years.length);
+    var yAxis = d3.svg.axis()
+                      .scale(yScale)
+                      .orient("left")
+                      .ticks(years.length);
+    var gx = svg.append("g")
+                .attr("transform", "translate(100, 520)");
+
+    var gy = svg.append("g")
+                .attr("transform", "translate(100, 20)");
+
+    svg.selectAll("g").attr("class", "axis")
+    gx.call(xAxis);
+    gy.call(yAxis);
+
+    svg.selectAll("circle")
+       .data(dataset.gdp)
+       .enter()
+       .append("circle")
+       .attr("cx", function(d){ return padding.left + xScale(d[0]) + 80; })
+       .attr("cy", function(d){ return padding.bottom + yScale(d[1]); })
+       .attr("r", 3)
+       .attr("fill", "black");
+
+    var colors = d3.scale.category20();
+
+    var line = d3.svg.line()
+                     .x(function(d){ return xScale(d[0]); })
+                     .y(function(d){ return yScale(d[1]); })
+                     .interpolate("basis");
+
+    svg.append("path")
+       .attr("d", line(dataset.gdp))
+       .attr("transform", "translate(100, 20)")
+       .attr("stroke", function(d, i){ return colors(i); })
+       .attr("stroke-width", 3)
+       .attr("fill", "none")
+    </script>
+</html>
