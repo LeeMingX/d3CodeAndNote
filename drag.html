@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>drag behavior</title>
+</head>
+<body>
+  <script src="js/d3.v3.min.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    var width = 500;
+    var height = 500;
+
+    var svg = d3.select("body")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+    var padding = {top: 50, right: 50, bottom: 50, left: 50};
+    var colors = d3.scale.category10();
+    var circles = [
+      {
+        cx: 100,
+        cy: 100,
+        r: 50
+      },
+      {
+        cx: 250,
+        cy: 100,
+        r: 50
+      },
+      {
+        cx: 100,
+        cy: 250,
+        r: 50
+      },
+      {
+        cx: 250,
+        cy: 250,
+        r: 50
+      }
+    ];
+
+    var zoom = d3.behavior.zoom()
+                          .scaleExtent([1, 10])
+                          .on("zoom", function(d) {
+                            d3.select(this).attr("transform", "translate("
+                             + d3.event.translate + ")" + "scale("
+                              + d3.event.scale + ")")
+                          })
+
+    var drag = d3.behavior.drag()
+                 .origin(function(d, i) {
+                   return {x: d.cx, y: d.cy};
+                 })
+                 .on("dragstart", function() {
+                   console.log("拖曳开始");
+                 })
+                 .on("dragend", function() {
+                   console.log("拖曳结束");
+                 })
+                 .on("drag", function(d) {
+                   d3.select(this)
+                     .attr("cx", d.cx = d3.event.x)
+                     .attr("cy", d.cy = d3.event.y);
+                 });
+
+    svg.selectAll("circle")
+       .data(circles)
+       .enter()
+       .append("circle")
+       .attr("cx", function(d) { return d.cx; })
+       .attr("cy", function(d) { return d.cy; })
+       .attr("r", function(d) { return d.r; })
+       .attr("fill", function(d, i) { return colors(i); })
+       .call(zoom);
+       // .call(drag);
+  </script>
+</body>
+</html>
