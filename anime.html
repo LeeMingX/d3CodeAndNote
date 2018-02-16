@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>anime</title>
+    <style media="screen">
+      .axis path, .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+      }
+
+      .axis text {
+        font-family: sans-serif;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="js/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      var width = 500;
+      var height = 500;
+      var svg = d3.select("body")
+                  .append("svg")
+                  .attr("width", width)
+                  .attr("height", height)
+
+      var padding = {top: 50, left: 50, bottom: 50, right: 50};
+      var xWidth = 300;
+      var yWidth = 300;
+
+      var data = [
+        [0.5, 0.5],
+        [0.7, 0.8],
+        [0.4, 0.9],
+        [0.11, 0.32],
+        [0.88, 0.25],
+        [0.75, 0.12],
+        [0.5, 0.1],
+        [0.2, 0.3],
+        [0.4, 0.1],
+        [0.6, 0.7],
+      ]
+
+      var xScale = d3.scale.linear()
+                           .domain([0, 1])
+                           .range([0, xWidth]);
+
+      var yScale = d3.scale.linear()
+                           .domain([0, 1])
+                           .range([0, yWidth]);
+
+      function drawCircle() {
+        var updatedCircle = svg.selectAll("circle")
+                              .data(data);
+        var enterCircle = updatedCircle.enter();
+        var exitCircle = updatedCircle.exit();
+
+        updatedCircle.transition()
+                     .duration(700)
+                     .attr("cx", function(d){ return xScale(d[0]) + padding.left; })
+                     .attr("cy", function(d){ return height - padding.bottom - yScale(d[1]); });
+
+        enterCircle.append("circle")
+                   .attr("cx", padding.left)
+                   .attr("cy", height - padding.bottom)
+                   .attr("r", 5)
+                   .attr("fill", "steelblue")
+                   .transition()
+                   .duration(700)
+                   .attr("cx", function(d){ return xScale(d[0]) + padding.left; })
+                   .attr("cy", function(d){ return height - padding.bottom - yScale(d[1]); });
+
+        exitCircle.transition()
+                  .duration(500)
+                  .attr("fill", "white")
+                  .remove();
+      }
+
+      function drawAxis() {
+        var xAxis = d3.svg.axis()
+                          .scale(xScale)
+                          .orient("bottom")
+                          .ticks(5)
+
+        var yAxis = d3.svg.axis()
+                          .scale(yScale)
+                          .orient("left")
+                          .ticks(5)
+
+        svg.append("g")
+           .attr("transform", "translate(" + padding.left + ", " + (height - padding.bottom) + ")")
+           .attr("class", "axis")
+           .call(xAxis);
+
+        yScale.range([yWidth, 0]);
+        svg.append("g")
+           .attr("transform", "translate(" + padding.left + ", " + (height - padding.bottom - yWidth) + ")")
+           .attr("class", "axis")
+           .call(yAxis);
+        yScale.range([0, yWidth]);
+      }
+
+      drawAxis();
+      drawCircle();
+
+      var texts = [
+        ["update", "update()"],
+        ["add", "add()"],
+        ["remove", "remove()"]
+      ];
+      var div = d3.select("body").append("div");
+      for (var i = 0; i < texts.length; ++i) {
+        div.append("button")
+           .html(texts[i][0])
+           .attr("type", "button")
+           .attr("onclick", texts[i][1])
+           .style("margin-right", "15px");
+      }
+
+      function update() {
+        for (var i = 0; i < data.length; ++i) {
+          data[i] = [Math.random(), Math.random()];
+        }
+        drawCircle();
+      }
+
+      function add() {
+        data.push([Math.random(), Math.random()]);
+        drawCircle();
+      }
+
+      function remove() {
+        data.pop();
+        drawCircle();
+      }
+      // var rect = svg.append("rect")
+      //    .attr("x", 50)
+      //    .attr("y", 100)
+      //    .attr("width", 100)
+      //    .attr("height", 30)
+      //    .attr("fill", "steelblue")
+      //
+      // var transRect = rect.transition()
+      //                     .attrTween("width", function(d, i, a){
+      //                       return function(t) {
+      //                         return Number(a) + t * 300;
+      //                       }
+      //                     })
+      //                     .delay(500)
+      //                     .duration(2000);
+      //                     // .ease("bounce");
+      //
+      // var text = svg.append("text")
+      //               .attr("x", 140)
+      //               .attr("y", 100)
+      //               .attr("dy", "1.2em")
+      //               .style("text-anchor", "end")
+      //               .text("100");
+      //
+      // var initX = text.attr("x");
+      // var initText = text.text();
+      // var transText = text.transition()
+      //                     .delay(500)
+      //                     .duration(2000)
+      //                     .tween("text", function(){
+      //                       return function(t) {
+      //                         d3.select(this)
+      //                           .attr("x", Number(initX) + t * 300)
+      //                           .text(Math.floor(Number(initText) + t * 300))
+      //                       }
+      //                     });
+
+      // var data = [100, 100, 100]
+      // var g = svg.append("g");
+      // var rects = g.selectAll("rect")
+      //    .data(data)
+      //    .enter()
+      //    .append("rect")
+      //    .attr("x", 100)
+      //    .attr("y", function(d, i){ return 50 + i * 30; })
+      //    .attr("id", function(d, i){ return "id" + i;  })
+      //    .attr("fill", "steelblue")
+      //    .attr("width", function(d){ return d; })
+      //    .attr("height", 20);
+      //
+      // g.selectAll("rect")
+      //  .filter(function(d, i){ return i >= 1; })
+      //  .transition()
+      //  .attr("width", 300)
+      //  .duration(2000)
+      //  .ease("bounce");
+      // var g = svg.append("g");
+      // var xScale = d3.scale.linear()
+      //                      .domain([0, 10])
+      //                      .range([0, 300])
+      //
+      // var xAxis = d3.svg.axis()
+      //                   .scale(xScale)
+      //                   .orient("bottom")
+      //
+      //
+      // g.attr("class", "axis")
+      //  .attr("transform", "translate(50, 50)")
+      //  .call(xAxis)
+      //
+      //  xScale.domain([0, 50])
+      //
+      //  g.transition()
+      //   .duration(2000)
+      //   .call(xAxis)
+    </script>
+  </body>
+</html>
