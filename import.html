@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>import and export</title>
+</head>
+<body>
+  <script src="d3.v3.min.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    d3.json("children.json", function(err, data){
+      console.log(data);
+    });
+    d3.csv("example.csv", function(err, data){
+      if(err) {
+          console.log(err);
+      } else {
+          console.log(data);
+      }
+    });
+    d3.xml("example.xml", function(err, xmlDocument){
+      console.log(xmlDocument.getElementsByTagName("title")[0]);
+      console.log(xmlDocument.getElementsByTagName("date")[0]);
+      console.log(xmlDocument.getElementsByTagName("body")[0]);
+    });
+    d3.text("example.txt", function(err, text){
+      d3.select("body").append("p").text(text);
+    });
+  </script>
+</body>
+</html>

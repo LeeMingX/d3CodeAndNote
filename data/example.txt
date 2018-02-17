@@ -1,0 +1,3 @@
+tsv同csv用法相同，它们都调用了d3.dsv方法
+Var dsv = d3.dsv("some file with seperate", "text/plain")
+之后dsv和d3.csv()、d3.tsv()用法相同

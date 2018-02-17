@@ -1,0 +1,23 @@
+{
+  "name": "china",
+  "children": [
+    {
+      "name": "zhejiang",
+      "children": [
+        { "name": "hangzhou" },
+        { "name": "ningbo" },
+        { "name": "wenzhou" },
+        { "name": "shaoxing" }
+      ]
+    },
+    {
+      "name": "guangxi",
+      "children": [
+        { "name": "guilin" },
+        { "name": "nanning" },
+        { "name": "liuzhou" },
+        { "name": "fangchenggang" }
+      ]
+    }
+  ]
+}
