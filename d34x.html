@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>d3.v4</title>
+</head>
+
+<body>
+  <canvas id="canvas" width="960" height="600"></canvas>
+  <script src="js/d3.min.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    // var nodes = [
+    //   { id: 1000, color: "red" },
+    //   { id: 1001, color: "orange" },
+    //   { id: 1002, color: "yellow" },
+    //   { id: 1003, color: "green" },
+    //   { id: 1004, color: "cyan" },
+    //   { id: 1005, color: "blue" }
+    // ]
+    //
+    // var canvas = document.querySelector("canvas");
+    // var ctx = canvas.getContext("2d");
+    // var width = canvas.width;
+    // var height = canvas.heigth;
+    //
+    // var simulation = d3.forceSimulation()
+    //                    .force("charge", d3.forceManyBody())
+    //                    .force("center", d3.forceCenter(width/2, height/2));
+    //
+    // simulation.nodes(nodes)
+    //           .on("tick", ticked);
+    //
+    // function ticked() {
+    //   ctx.clearRect(0, 0, width, height);
+    //   nodes.forEach(function(node) {
+    //     ctx.beginPath();
+    //     ctx.fillStyle = node.color;
+    //     ctx.arc(node.x, node.y, 20, 0, 2*Math.PI);
+    //     ctx.fill();
+    //   })
+    // }
+
+
+    var canvas = document.querySelector("canvas");
+    var ctx = canvas.getContext("2d");
+    var width = canvas.width;
+    var height = canvas.height;
+
+    var simulation = d3.forceSimulation()
+      .velocityDecay(0.5)
+      .force("charge", d3.forceManyBody().strength(-50))
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .force("collide", d3.forceCollide(12.5));
+
+    simulation.alpha(1.5);
+    simulation.alphaMin(0.001);
+    simulation.alphaDecay(0.0228);
+    simulation.alphaTarget(0);
+
+    var num = 50;
+    var nodes = [];
+    var links = [];
+
+    for (var i = 0; i < num; ++i) {
+      nodes.push({
+        id: i
+      });
+    }
+
+    for (var i = 0; i < 5; ++i) {
+      links.push({
+        source: i,
+        target: (i + 1) % 5
+      });
+    }
+    for (var i = 5; i < num; ++i) {
+      links.push({
+        source: (i % 5),
+        target: i
+      });
+    }
+
+    console.log(nodes)
+    console.log(links)
+
+    simulation.nodes(nodes)
+      .on("tick", ticked);
+
+    simulation.force("link",
+      d3.forceLink()
+      .links(links)
+      .id(function(d) {
+        return d.id;
+      })
+      .distance(80)
+    );
+
+
+    function ticked() {
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "black";
+      ctx.beginPath();
+      links.forEach(function(link) {
+        ctx.moveTo(link.source.x, link.source.y);
+        ctx.lineTo(link.target.x, link.target.y);
+      });
+      ctx.stroke();
+
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "black"
+      ctx.fillStyle = "orange";
+      nodes.forEach(function(node) {
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, 10, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke();
+      });
+    }
+
+    d3.select("canvas")
+      .call(d3.drag().container(canvas)
+              .subject(getClosestNode)
+              .on("start", dragstarted)
+              .on("drag", dragged)
+              .on("end", dragended));
+
+    function getClosestNode() {
+      return simulation.find(d3.event.x, d3.event.y);
+    }
+
+    function dragstarted() {
+      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+      d3.event.subject.fx = d3.event.subject.x;
+      d3.event.subject.fy = d3.event.subject.y;
+    }
+
+    function dragged() {
+      d3.event.subject.fx = d3.event.x;
+      d3.event.subject.fy = d3.event.y;
+    }
+
+    function dragended() {
+      if (!d3.event.active) simulation.alphaTarget(0);
+      d3.event.subject.fx = null;
+      d3.event.subject.fy = null;
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>treemap</title>
+    <style media="screen">
+      .nodeRect {
+        stroke: white;
+        stroke-width: 2px;
+      }
+      .nodeText {
+        fill: white;
+        font-size: 12px;
+        font-family: sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="js/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      var width = 1000;
+      var height = 1000;
+      var svg = d3.select("body")
+                  .append("svg")
+                  .attr("width", width)
+                  .attr("height", height);
+
+      var data = {
+        name: "中国",
+        children: [
+          {
+            name: "浙江",
+            children: [
+              { name: "盐城", gdp: 3836 },
+              { name: "常州", gdp: 4360 },
+              { name: "徐州", gdp: 8273 },
+              { name: "南通", gdp: 2772 },
+              { name: "无锡", gdp: 2958 },
+              { name: "南京", gdp: 5728 },
+              { name: "泰州", gdp: 9287 },
+              { name: "镇江", gdp: 7266 },
+              { name: "苏州", gdp: 3825 }
+            ]
+          },
+          {
+            name: "江苏",
+            children: [
+              { name: "宁波", gdp: 9237 },
+              { name: "杭州", gdp: 4727 },
+              { name: "温州", gdp: 9283 },
+              { name: "绍兴", gdp: 2875 },
+              { name: "嘉兴", gdp: 5829 },
+              { name: "台州", gdp: 6829 },
+              { name: "通州", gdp: 3746 },
+              { name: "金华", gdp: 3720 },
+              { name: "丽水", gdp: 4763 },
+              { name: "舟山", gdp: 9204 },
+              { name: "湖州", gdp: 9384 }
+            ]
+          },
+          {
+            name: "广西",
+            children: [
+              { name: "玉林", gdp: 7323 },
+              { name: "崇左", gdp: 2983 },
+              { name: "南宁", gdp: 4753 },
+              { name: "桂林", gdp: 7281 },
+              { name: "防城港", gdp: 6532 },
+              { name: "来宾", gdp: 2839 },
+              { name: "河池", gdp: 5839 },
+              { name: "贺州", gdp: 6827 },
+              { name: "白色", gdp: 5729 },
+              { name: "北海", gdp: 3929 },
+              { name: "贵港", gdp: 9739 }
+            ]
+          }
+        ]
+      };
+
+      var treemap = d3.layout.treemap()
+                             .size([width, height])
+                             .padding(5)
+                             .value(function(d) { return d.gdp; });
+
+      var nodes = treemap.nodes(data);
+      var links = treemap.links(nodes);
+
+      var group = svg.selectAll("g")
+                     .data(nodes.filter(function(d) { return !d.children; }))
+                     .enter()
+                     .append("g");
+
+      var colors = d3.scale.category20();
+      var rects = group.append("rect")
+                       .attr("class", "nodeRect")
+                       .attr("x", function(d) { return d.x; })
+                       .attr("y", function(d) { return d.y; })
+                       .attr("width", function(d) { return d.dx; })
+                       .attr("height", function(d) { return d.dy; })
+                       .style("fill", function(d, i) { return colors(d.parent.name); });
+
+      var texts = group.append("text")
+                       .attr("class", "nodeText")
+                       .attr("x", function(d) { return d.x; })
+                       .attr("y", function(d) { return d.y; })
+                       .attr("dx", "0.5em")
+                       .attr("dy", "1.5em")
+                       .text(function(d) {
+                         return d.name + " " + d.gdp;
+                       })
+    </script>
+  </body>
+</html>

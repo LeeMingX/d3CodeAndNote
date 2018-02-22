@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>histogram</title>
+    <style media="screen">
+      .axis {
+        fill: none;
+        stroke: black;
+        stroke-width: 1px;
+        font-size: 10px;
+      }
+      .rect {
+        fill: steelblue;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="js/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      var width = 1000;
+      var height = 1000;
+      var svg = d3.select("body")
+                  .append("svg")
+                  .attr("width", width)
+                  .attr("height", height);
+
+      var rand = d3.random.normal(170, 10);
+      var dataset = [];
+
+      for (var i = 0; i < 100; ++i) {
+        dataset.push(rand());
+      }
+
+      var binNum = 20, rangeMin = 130, rangeMax = 210;
+      var histogram = d3.layout.histogram()
+                               .range([rangeMin, rangeMax])
+                               .bins(binNum)
+                               .frequency(true);
+
+      var hisData = histogram(dataset);
+      var xAxisWidth = 450,
+          xTicks = hisData.map(function(d) { return d.x; })
+
+      var xScale = d3.scale.ordinal()
+                          .domain(xTicks)
+                          .rangeRoundBands([0, xAxisWidth], 0.1);
+
+      var padding = { top: 50, right: 50, bottom: 50, left: 50 };
+      var xAxis = d3.svg.axis()
+                        .scale(xScale)
+                        .orient("bottom")
+                        .tickFormat(d3.format(".0f"));
+
+       svg.append("g")
+          .attr("class", "axis")
+          .attr("transform", "translate(" + padding.left + "," + (height - padding.bottom) + ")")
+          .call(xAxis);
+
+      var yAxisWidth = 450;
+      var yScale = d3.scale.linear()
+                           .domain([d3.min(hisData, function(d) { return d.y; }), d3.max(hisData, function(d) { return d.y})])
+                           .range([5, yAxisWidth]);
+
+      var gRect = svg.append("g")
+                     .attr("transform", "translate(" + padding.left + "," + (-padding.bottom) + ")");
+
+      gRect.selectAll("rect")
+           .data(hisData)
+           .enter()
+           .append("rect")
+           .attr("class", "rect")
+           .attr("x", function(d, i) {
+             return xScale(d.x);
+           })
+           .attr("y", function(d, i) {
+             return height - yScale(d.y);
+           })
+           .attr("width", function(d, i) {
+             return xScale.rangeBand();
+           })
+           .attr("height", function(d) {
+             return yScale(d.y);
+           })
+           .style("fill", "steelblue");
+
+    </script>
+  </body>
+</html>
