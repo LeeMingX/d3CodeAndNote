@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>d3v4 color</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+    <script src="js/d3.min.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script type="text/javascript">
+      var canvas = document.querySelector("canvas");
+      var ctx = canvas.getContext("2d");
+
+      var colors1 = d3.schemeCategory10;
+      var colors2 = d3.schemeCategory20;
+      var colors3 = d3.schemeCategory20b;
+      var colors4 = d3.schemeCategory20c;
+
+      // 分类色
+      var colors6 = d3.schemeAccent;
+      var colors7 = d3.schemeDark2;
+      var colors8 = d3.schemePaired;
+      var colors9 = d3.schemePastel1;
+      var colors10 = d3.schemePastel2;
+      var colors11 = d3.schemeSet1;
+      var colors12 = d3.schemeSet2;
+      var colors13 = d3.schemeSet3;
+
+      var colors = d3.scaleOrdinal(colors3);
+      // var cateColors = d3.scaleOrdinal(colors6);
+      var cateColors = d3.scaleOrdinal(colors7);
+      // var cateColors = d3.scaleOrdinal(colors6);
+      // var cateColors = d3.scaleOrdinal(colors6);
+      // var cateColors = d3.scaleOrdinal(colors6);
+      // var cateColors = d3.scaleOrdinal(colors6);
+      // var cateColors = d3.scaleOrdinal(colors6);
+      // var cateColors = d3.scaleOrdinal(colors6);
+
+      function draw(color, pos) {
+        ctx.fillStyle = color;
+        ctx.fillRect(pos.x, pos.y, pos.width, pos.height);
+        if (pos.x > 480) {
+          pos.x = 10;
+          pos.y += 30;
+        } else {
+          pos.x += 30;
+        }
+      }
+
+      var pos = {
+        x: 10,
+        y: 10,
+        width: 30,
+        height: 30
+      }
+      
+      for (var i = 0; i < colors7.length; ++i) {
+        draw(cateColors(i), pos);
+      }
+    </script>
+  </body>
+</html>
